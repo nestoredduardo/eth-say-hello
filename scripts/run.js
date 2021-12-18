@@ -11,18 +11,9 @@ const main = async () => {
 
   let waveTxn = await waveContract.wave("Nestor", "Hello Peter", 8)
   await waveTxn.wait()
-
   waveCount = await waveContract.getTotalWaves()
 
-  waveTxn = await waveContract.wave("Eduardo", "Hello Peter", 1)
-  await waveTxn.wait()
-  waveCount = await waveContract.getTotalWaves()
-
-  waveTxn = await waveContract.wave("Eduardo", "Hello Peter", 1)
-  await waveTxn.wait()
-  waveCount = await waveContract.getTotalWaves()
-
-  waveTxn = await waveContract.wave("Eduardo", "Hello Peter", 1)
+  waveTxn = await waveContract.wave("Nestor", "Hello Peter", 1)
   await waveTxn.wait()
   waveCount = await waveContract.getTotalWaves()
 

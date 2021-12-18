@@ -20,12 +20,16 @@ contract WavePortal {
 
   function wave(string memory name,string memory message,uint256 waveNumber) public{
     if(partnerList.length > 0){
-      for(uint i =0; i< partnerList.length; i++){
+      bool found;
+      for(uint256 i = 0; i < partnerList.length; i++){
         if(keccak256(abi.encode(partnerList[i].name)) == keccak256(abi.encode(name))){
           partnerList[i].waveNumber += waveNumber;
-        }else{
-          partnerList.push(partner(name,message,waveNumber));
+          found = true;
+          break;
         }
+      }
+      if(!found){
+      partnerList.push(partner(name,message,waveNumber));
       }
     }else{
       partnerList.push(partner(name,message,waveNumber));
