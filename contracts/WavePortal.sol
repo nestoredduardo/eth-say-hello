@@ -7,39 +7,36 @@ import "hardhat/console.sol";
 
 contract WavePortal {
   uint256 public totalWaves;
+
+  event NewWave(address indexed from, uint256 timestamp, string name, string message);
+
   struct partner {
+    address waver;
     string name;
     string message;
-    uint256 waveNumber;
+    uint256 timestamp;
   }
   partner[] public partnerList;
 
-  constructor(){
+  constructor() payable{
     console.log("Smart contracts for babies");
   }
 
-  function wave(string memory name,string memory message,uint256 waveNumber) public{
-    if(partnerList.length > 0){
-      bool found;
-      for(uint256 i = 0; i < partnerList.length; i++){
-        if(keccak256(abi.encode(partnerList[i].name)) == keccak256(abi.encode(name))){
-          partnerList[i].waveNumber += waveNumber;
-          found = true;
-          break;
-        }
-      }
-      if(!found){
-      partnerList.push(partner(name,message,waveNumber));
-      }
-    }else{
-      partnerList.push(partner(name,message,waveNumber));
-    }
-    
-    totalWaves += waveNumber;
-    console.log("%s has waved!", msg.sender);
-    console.log("Name: %s", name);
-    console.log("Message: %s", message);
-    console.log("Wave Number: %s", waveNumber);
+  function wave(string memory name,string memory message) public{
+    totalWaves += 1;
+    console.log("%s waved w/ message %s", msg.sender, message);
+
+    partnerList.push(partner(msg.sender, name, message, block.timestamp));
+
+    emit NewWave(msg.sender, block.timestamp, name, message);
+
+    uint256 prizeAmount = 0.0001 ether;
+    require(
+      prizeAmount <= address(this).balance,
+      "Trying to withdraw more money than the contract has."
+    );
+    (bool success, ) = (msg.sender).call{value: prizeAmount}("");
+    require(success, 'Failed to withdraw money from contract');
   }
 
   function getTotalWaves() public view returns (uint256){
